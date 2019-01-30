@@ -8,25 +8,11 @@ defmodule Words do
   def count(sentence) do
     sentence
     |> String.downcase()
-    |> String.split(~r/(\s|_)/u, trim: true)
+    |> String.split(~r/[^[:alnum:]\-]/u, trim: true)
     |> do_count()
   end
 
   defp do_count(words) do
-    Enum.reduce(words, %{}, fn w, acc ->
-      if word?(w) do
-        Map.update(acc, clean_string(w), 1, &(&1 + 1))
-      else
-        acc
-      end
-    end)
-  end
-
-  defp word?(str) do
-    String.match?(str, ~r/^\w/)
-  end
-
-  defp clean_string(str) do
-    String.replace(str, ~r/[^-\w]/u, "")
+    Enum.reduce(words, %{}, fn w, acc -> Map.update(acc, w, 1, &(&1 + 1)) end)
   end
 end
