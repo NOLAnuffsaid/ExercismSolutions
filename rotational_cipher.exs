@@ -1,4 +1,8 @@
 defmodule RotationalCipher do
+
+  @LOWERCASE_RANGE = ?a..?z
+  @UPPERCASE_RANGE = ?A..?Z
+
   @doc """
   Given a plaintext and amount to shift by, return a rotated string.
 
@@ -8,6 +12,20 @@ defmodule RotationalCipher do
   """
   @spec rotate(text :: String.t(), shift :: integer) :: String.t()
   def rotate(text, shift) do
-    String.Chars.to_string([if(119 + 5 > 90, do: (119 + 13 - 90) + 64, else: 119 + 5)])
+    text
+    |> String.to_charlist()
+    |> Enum.reduce("", fn c, acc -> "#{acc}#{shift_char(c, shift)}" end)
   end
+
+  defp shift_char(char, shift) when char in @LOWERCASE_RANGE do
+    shifted_char = char + shift
+    if shifted_char in @LOWERCASE_RANGE, do: [shifted_char], else: [(shifted_char - 122) + 96]
+  end
+
+  defp shift_char(char, shift) when char in @UPPERCASE_RANGE do
+    shifted_char = char + shift
+    if shifted_char in @UPPERCASE_RANGE , do: [shifted_char], else: [(shifted_char - 90) + 64]
+  end
+
+  defp shift_char(char, _shift), do: [char]
 end
